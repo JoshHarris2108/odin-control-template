@@ -63,14 +63,18 @@ jobs:
     
     - name: Push files to new repository
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
       run: |
-        cd "${{ github.event.inputs.project_slug }}"
-        git init
+        # Clone the empty repository
+        git clone "https://github.com/JoshHarris2108/${{ github.event.inputs.repository_name }}.git"
+        
+        # Copy generated files into the cloned repo
+        cp -r "${{ github.event.inputs.project_slug }}"/* "${{ github.event.inputs.repository_name }}/"
+        
+        # Commit and push
+        cd "${{ github.event.inputs.repository_name }}"
         git config user.name "${{ github.event.inputs.author_name }}"
         git config user.email "${{ github.event.inputs.author_email }}"
         git add .
         git commit -m "Initial commit from template"
-        git branch -M main
-        git remote add origin "https://github.com/JoshHarris2108/${{ github.event.inputs.repository_name }}.git"
-        git push -u origin main
+        git push
