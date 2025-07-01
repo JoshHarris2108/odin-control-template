@@ -65,8 +65,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
       run: |
-        # Clone the empty repository
-        git clone "https://github.com/JoshHarris2108/${{ github.event.inputs.repository_name }}.git"
+        # Clone the empty repository with authentication
+        git clone "https://${{ secrets.PERSONAL_GITHUB_TOKEN }}@github.com/JoshHarris2108/${{ github.event.inputs.repository_name }}.git"
         
         # Copy generated files into the cloned repo
         cp -r "${{ github.event.inputs.project_slug }}"/* "${{ github.event.inputs.repository_name }}/"
