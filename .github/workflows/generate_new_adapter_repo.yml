@@ -1,0 +1,76 @@
+name: Create Detector Project
+on:
+  workflow_dispatch:
+    inputs:
+      project_name:
+        description: 'Project Name'
+        required: true
+        type: string
+      repository_name:
+        description: 'Repository Name'
+        required: true
+        type: string
+      author_name:
+        description: 'Author Name'
+        required: true
+        type: string
+        default: 'Josh Harris'
+      author_email:
+        description: 'Author Email'
+        required: true
+        type: string
+        default: 'josh.harris@stfc.ac.uk'
+      description:
+        description: 'Project Description'
+        required: true
+        type: string
+        default: 'odin-control based detector system'
+      project_slug:
+        description: 'Directory name'
+        required: false
+        type: string
+        default: 'control'
+
+jobs:
+  create-project:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Generate project from template
+      uses: andrewthetechie/gha-cookiecutter@main
+      with:
+        template: .
+        cookiecutterValues: |
+          {
+            "project_name": "${{ github.event.inputs.project_name }}",
+            "project_slug": "${{ github.event.inputs.project_slug }}",
+            "author_name": "${{ github.event.inputs.author_name }}",
+            "author_email": "${{ github.event.inputs.author_email }}",
+            "description": "${{ github.event.inputs.description }}",
+            "python_requires": ">=3.10",
+            "github_org": "JoshHarris2108",
+            "github_url": "https://github.com/JoshHarris2108/${{ github.event.inputs.repository_name }}"
+          }
+    
+    - name: Create GitHub repository
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh repo create "JoshHarris2108/${{ github.event.inputs.repository_name }}" \
+          --description "${{ github.event.inputs.description }}" \
+          --private
+    
+    - name: Push files to new repository
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        cd "${{ github.event.inputs.project_slug }}"
+        git init
+        git config user.name "${{ github.event.inputs.author_name }}"
+        git config user.email "${{ github.event.inputs.author_email }}"
+        git add .
+        git commit -m "Initial commit from template"
+        git branch -M main
+        git remote add origin "https://github.com/JoshHarris2108/${{ github.event.inputs.repository_name }}.git"
+        git push -u origin main
