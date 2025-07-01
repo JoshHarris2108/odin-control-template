@@ -75,7 +75,7 @@ jobs:
         git clone "https://${{ secrets.PERSONAL_GITHUB_TOKEN }}@github.com/JoshHarris2108/${{ github.event.inputs.repository_name }}.git"
         
         # Copy generated files into the cloned repo
-        cp -r "${{ github.event.inputs.project_slug }}"/* "${{ github.event.inputs.repository_name }}/"
+        cp -r "${{ github.event.inputs.project_slug }}" "${{ github.event.inputs.repository_name }}/"
         
         # Commit and push
         cd "${{ github.event.inputs.repository_name }}"
