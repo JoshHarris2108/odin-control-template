@@ -1,4 +1,4 @@
-name: Create Detector Project
+name: Create odin-control Adapter Repo
 on:
   workflow_dispatch:
     inputs:
@@ -24,7 +24,7 @@ on:
         description: 'Project Description'
         required: true
         type: string
-        default: 'odin-control based detector system'
+        default: 'odin-control adapter'
       project_slug:
         description: 'Directory name'
         required: false
